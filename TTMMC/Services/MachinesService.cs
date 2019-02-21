@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using TTMMC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTMMC.ConfigurationModels;
+using TTMMC.Models;
 
 namespace TTMMC.Services
 {
@@ -20,7 +20,7 @@ namespace TTMMC.Services
     public enum MachineType
     {
         Null,
-        SD_Systec100,
+        Decofast,
     }
 
     public enum MachineStatus
@@ -73,15 +73,20 @@ namespace TTMMC.Services
             return null;
         }
 
-        //public OPCMachine GetMachineByName(string Name)
-        //{
-        //    if (!string.IsNullOrEmpty(Name))
-        //    {
-        //        var machine = Machines[Name];
-        //        return machine;
-        //    }
-        //    return null;
-        //}
+        public IMachine GetMachineByName(string Name)
+        {
+            if (!string.IsNullOrEmpty(Name))
+            {
+                foreach (var m in machines)
+                {
+                    if (m.ReferenceName == Name)
+                    {
+                        return m;
+                    }
+                }
+            }
+            return null;
+        }
 
         //public string MachineStatusJson
         //{

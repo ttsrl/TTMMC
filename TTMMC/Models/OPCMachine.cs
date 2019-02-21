@@ -12,12 +12,13 @@ namespace TTMMC.Models
 {
     partial class OPCMachine : IMachine
     {
+        private bool recording = false;
         private UaClient uaClient;
         private bool firstConnection = false;
         private Dictionary<string, List<DataItem>> datasAddressToRead = new Dictionary<string, List<DataItem>>();
         private Dictionary<string, List<DataItem>> datasAddressToWrite = new Dictionary<string, List<DataItem>>();
         private string imgLink;
-
+        
         public string Description { get; }
         public int Id { get; }
         public string Address { get; }
@@ -26,7 +27,7 @@ namespace TTMMC.Models
         public MachineType Type { get; }
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
-        public bool Recording { get; set; }
+        public bool Recording { get => recording; set => recording = value; }
 
         public OPCMachine(Machine machine)
         {
@@ -260,6 +261,30 @@ namespace TTMMC.Models
         public Dictionary<string, List<DataItem>> GetParametersWrite()
         {
             return datasAddressToWrite;
+        }
+
+        public List<DataItem> GetParameterRead(string name)
+        {
+            foreach(var p in datasAddressToRead)
+            {
+                if(p.Key == name)
+                {
+                    return p.Value;
+                }
+            }
+            return null;
+        }
+
+        public List<DataItem> GetParameterWrite(string name)
+        {
+            foreach (var p in datasAddressToWrite)
+            {
+                if (p.Key == name)
+                {
+                    return p.Value;
+                }
+            }
+            return null;
         }
 
     }
