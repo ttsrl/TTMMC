@@ -70,7 +70,8 @@ namespace TTMMC.Models
 
                 var record = new LayoutRecord
                 {
-                    Fields = fields
+                    Fields = fields,
+                    Timestamp = DateTime.Now
                 };
 
                 ll.LayoutSetRecord = record;
