@@ -177,6 +177,8 @@ namespace TTMMC.Controllers
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
                     ll.TimerTick = 2;
+                    ll.Rounded = true;
+                    ll.RoundedPrecision = 3;
                     await ll.Start();
                 }
             }

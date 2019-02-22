@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Report";
     Layout = "_Layout.cshtml";
+
+    var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 41, 20);
 }
 <div class="pdfPage">
     @(await Html.PartialAsync("Header"))
@@ -14,27 +16,73 @@
         <h3>Impostazioni macchina</h3>
         <table class="pdf_table" border="0">
             <tr>
+                <th class="rotate"><div class="divTimestamp"><span>Timestamp</span></div></th>
                 @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
                 {
-                    <td>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</td>
+                    <th class="rotate"><div><span>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</span></div></th>
                 }
             </tr>
             <tr>
+                <td>@Model.Layout.LayoutSetRecord.Timestamp.ToString("dd/MM/yy")<br />@Model.Layout.LayoutSetRecord.Timestamp.ToString("HH:mm")</td>
                 @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
                 {
                     var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(set.Value) ?? new Dictionary<string, string>();
                     if (json.Count == 1)
                     {
-                        <td style="text-align:center;">@(_utils.ValueToString(typeof(double),json.Values.ElementAt(0), 3))</td>
+                        <td style="text-align:center;">@(json.Values.ElementAt(0))</td>
                     }
                     else
                     {
                         <td>
-
+                            @foreach (var v in json.Values)
+                            {
+                                @v
+                                <br />
+                            }
                         </td>
                     }
                 }
             </tr>
         </table>
+        <h3>Record macchina</h3>
+        @foreach (var g in groupped)
+        {
+            <table class="pdf_table" border="0">
+                <tr>
+                    <th class="rotate"><div class="divTimestamp"><span>Timestamp</span></div></th>
+                    @foreach (var set in Model.Layout.LayoutActRecords[0].Fields)
+                    {
+                        <th class="rotate"><div><span>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</span></div></th>
+                    }
+                </tr>
+                @foreach (var r in g)
+                {
+                    var dic = r.Fields.Select(lr => new { lr.Key, lr.Value }).ToDictionary(d => d.Key, d => d.Value);
+                    <tr>
+                        <td>@r.Timestamp.ToString("dd/MM/yy")<br />@r.Timestamp.ToString("HH:mm")</td>
+                        @foreach (var set in Model.Layout.LayoutActRecords[0].Fields)
+                        {
+                            var elm = dic[set.Key];
+                            var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(elm) ?? new Dictionary<string, string>();
+                            if (json.Count == 1)
+                            {
+                                <td style="text-align:center;">@(json.Values.ElementAt(0))</td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @foreach (var v in json.Values)
+                                    {
+                                        @v
+                                        <br />
+                                    }
+                                </td>
+                            }
+                        }
+                    </tr>
+                }
+            </table>
+            <div asp-if="@(groupped.IndexOf(g) < groupped.Count - 1)" class="page-breaker"></div>
+        }
     </div>
 </div>

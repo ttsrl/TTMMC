@@ -84,12 +84,46 @@ namespace TTMMC.Services
         {
             if (type != typeof(string))
             {
-                if ((val.Contains(",")))
+                if(val.Contains(",")) //è un numero
                 {
-                    return val.Substring(0, val.IndexOf(",") + numberDecimal + 1);
+                    var int_ = val.Substring(0, val.IndexOf(","));
+                    var decs = val.Substring(val.IndexOf(",") + 1);
+                    decs = (decs.Length > numberDecimal) ? decs.Substring(0, numberDecimal) : decs;
+                    return int_ + "," + decs;
                 }
             }
             return val;
+        }
+
+        public List<List<T>> GrouppedByCount<T>(List<T> elements, int count, int first = 0)
+        {
+            first = (first == 0) ? count : first;
+            var out_ = new List<List<T>>();
+            var cc = 1;
+            var ff = false;
+            foreach (var elm in elements)
+            {
+                var check = (ff == false) ? first : count;
+                if (cc == 1)
+                {
+                    var l = new List<T>();
+                    l.Add(elm);
+                    out_.Add(l);
+                    cc++;
+                }
+                else if (cc < check)
+                {
+                    out_[out_.Count - 1].Add(elm);
+                    cc++;
+                }
+                else if (cc == check)
+                {
+                    out_[out_.Count - 1].Add(elm);
+                    cc = 1;
+                    ff = true;
+                }
+            }
+            return out_;
         }
     }
 }
