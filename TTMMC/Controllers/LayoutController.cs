@@ -178,10 +178,23 @@ namespace TTMMC.Controllers
                     var ll = _lListener.GetLayoutListenItem(layout);
                     ll.TimerTick = 2;
                     ll.Rounded = true;
-                    ll.RoundedPrecision = 3;
+                    ll.RoundedPrecision = 2;
                     await ll.Start();
                 }
             }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> remove(int id)
+        {
+            var ff = await _dB.LayoutsActRecordsFields.ToListAsync();
+            var f = await _dB.LayoutsActRecords.ToListAsync();
+            var l = await _dB.Layouts.FirstOrDefaultAsync();
+            l.Status = Status.Waiting;
+            _dB.LayoutsActRecordsFields.RemoveRange(ff);
+            _dB.LayoutsActRecords.RemoveRange(f);
+            await _dB.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 

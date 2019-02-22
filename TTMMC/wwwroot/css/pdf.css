@@ -7,7 +7,7 @@
 }
 
 .pdfPage {
-    margin: 45px;
+    margin: 25px;
     text-align: left;
 }
 
@@ -68,7 +68,7 @@ header {
 .pdf_table {
     border-radius: 4px;
     border-spacing: 0;
-    font-size: 8px;
+    font-size: 7px;
 }
 
     .pdf_table tr:last-of-type td {
@@ -83,7 +83,8 @@ header {
         border-bottom: 1px solid #ccc;
         border-right: 1px solid #ccc;
         color: rgb(50, 50, 50);
-        padding: 1px 3px;
+        padding: 1px 2px;
+        word-break: break-all;
     }
 
     .pdf_table .rotate {
@@ -94,26 +95,28 @@ header {
     }
 
         .pdf_table .rotate > div {
-            transform: translate(16px, 32px) rotate(315deg);
-            -webkit-transform: translate(16px, 32px) rotate(315deg); /* Safari/Chrome */
-            -moz-transform: translate(16px, 32px) rotate(315deg); /* Firefox */
-            -o-transform: translate(16px, 32px) rotate(315deg); /* Opera */
-            -ms-transform: translate(16px, 32px) rotate(315deg); /* IE 9 */
+            transform: translate(17px, 32px) rotate(315deg);
+            -webkit-transform: translate(17px, 32px) rotate(315deg); /* Safari/Chrome */
+            -moz-transform: translate(17px, 32px) rotate(315deg); /* Firefox */
+            -o-transform: translate(17px, 32px) rotate(315deg); /* Opera */
+            -ms-transform: translate(17px, 32px) rotate(315deg); /* IE 9 */
             width: 25px;
+            float: right;
         }
 
             .pdf_table .rotate > div > span {
                 border-bottom: 1px solid #ccc;
                 padding: 3px 8px;
+                padding-left: 0;
             }
 
         .pdf_table .rotate .divTimestamp {
-            transform: translate(24px, 29px) rotate(315deg);
-            -webkit-transform: translate(24px,29px) rotate(315deg); /* Safari/Chrome */
-            -moz-transform: translate(24px, 29px) rotate(315deg); /* Firefox */
-            -o-transform: translate(24px, 29px) rotate(315deg); /* Opera */
-            -ms-transform: translate(24px, 29px) rotate(315deg); /* IE 9 */
-            width: 35px;
+            transform: translate(22px, 30px) rotate(315deg);
+            -webkit-transform: translate(22px,30px) rotate(315deg); /* Safari/Chrome */
+            -moz-transform: translate(22px, 30px) rotate(315deg); /* Firefox */
+            -o-transform: translate(22px, 30px) rotate(315deg); /* Opera */
+            -ms-transform: translate(22px, 30px) rotate(315deg); /* IE 9 */
+            width: 31px;
         }
 
 .page-breaker {

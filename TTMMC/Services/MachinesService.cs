@@ -20,7 +20,7 @@ namespace TTMMC.Services
     public enum MachineType
     {
         Null,
-        Decofast,
+        SD_Systec100,
     }
 
     public enum MachineStatus

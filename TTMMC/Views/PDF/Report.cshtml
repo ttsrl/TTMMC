@@ -4,7 +4,7 @@
     ViewData["Title"] = "Report";
     Layout = "_Layout.cshtml";
 
-    var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 41, 20);
+    var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 55, 35);
 }
 <div class="pdfPage">
     @(await Html.PartialAsync("Header"))
@@ -44,13 +44,15 @@
                 }
             </tr>
         </table>
+        <br />
+        <br />
         <h3>Record macchina</h3>
         @foreach (var g in groupped)
         {
             <table class="pdf_table" border="0">
                 <tr>
                     <th class="rotate"><div class="divTimestamp"><span>Timestamp</span></div></th>
-                    @foreach (var set in Model.Layout.LayoutActRecords[0].Fields)
+                    @foreach (var set in Model.Layout.LayoutActRecords[0].Fields.OrderBy(l => l.Key))
                     {
                         <th class="rotate"><div><span>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</span></div></th>
                     }
@@ -60,7 +62,7 @@
                     var dic = r.Fields.Select(lr => new { lr.Key, lr.Value }).ToDictionary(d => d.Key, d => d.Value);
                     <tr>
                         <td>@r.Timestamp.ToString("dd/MM/yy")<br />@r.Timestamp.ToString("HH:mm")</td>
-                        @foreach (var set in Model.Layout.LayoutActRecords[0].Fields)
+                        @foreach (var set in Model.Layout.LayoutActRecords[0].Fields.OrderBy(l => l.Key))
                         {
                             var elm = dic[set.Key];
                             var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(elm) ?? new Dictionary<string, string>();
