@@ -35,7 +35,6 @@ namespace TTMMC.Models.ViewModels
         public int Mould { get; set; }
         [Required]
         public int Machine { get; set; }
-        [Required]
         public int Master { get; set; }
         [Required]
         public int Mixture { get; set; }

@@ -2,10 +2,9 @@
 @{
     ViewData["Title"] = "Modifica Lavorazione";
 }
-
 <h2>Modifica Lavorazione</h2>
 <div class="content_page margin_bottom">
-    <form id="editLayoutForm" asp-action="Edit" asp-controller="Layout" asp-antiforgery="true" method="post" autocomplete="off">
+    <form id="editLayoutForm" asp-action="Edit" asp-controller="Layout" asp-route-id="@Model.Layout.Id" asp-antiforgery="true" method="post" autocomplete="off">
         <label for="client" class="title">Cliente:</label>
         <select style="width:210px;" name="client">
             <option value="">--</option>

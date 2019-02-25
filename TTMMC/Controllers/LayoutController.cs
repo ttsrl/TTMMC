@@ -78,40 +78,37 @@ namespace TTMMC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New([FromServices] Barcode barcode, [FromServices] Utilities _utils, NewLayoutModel model)
         {
-            if (ModelState.IsValid)
+            if (model.Client > 0 && model.Mould > 0 && model.Mixture > 0 && model.Quantity > 0 && model.Machine > 0)
             {
-                if (model.Client > 0 && model.Mould > 0 && model.Master > 0 && model.Mixture > 0 && model.Quantity > 0 && model.Machine > 0)
+                var client = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == model.Client);
+                var mould = await _dB.Moulds.FirstOrDefaultAsync(c => c.Id == model.Mould);
+                var master = await _dB.Masters.FirstOrDefaultAsync(c => c.Id == model.Master);
+                var mixture = await _dB.Mixtures.FirstOrDefaultAsync(c => c.Id == model.Mixture);
+                var machine = _machines.GetMachineById(model.Machine);
+                if (client is Client && mould is Mould && mixture is Mixture && machine is IMachine)
                 {
-                    var client = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == model.Client);
-                    var mould = await _dB.Moulds.FirstOrDefaultAsync(c => c.Id == model.Mould);
-                    var master = await _dB.Masters.FirstOrDefaultAsync(c => c.Id == model.Master);
-                    var mixture = await _dB.Mixtures.FirstOrDefaultAsync(c => c.Id == model.Mixture);
-                    var machine = _machines.GetMachineById(model.Machine);
-                    if (client is Client && mould is Mould && master is Master && mixture is Mixture && machine is IMachine)
+                    var codes = await _dB.Layouts.Select(c => c.Barcode).ToListAsync();
+                    var layout = new Layout
                     {
-                        var codes = await _dB.Layouts.Select(c => c.Barcode).ToListAsync();
-                        var layout = new Layout
-                        {
-                            Barcode = barcode.CreateNewEan13(codes),
-                            Client = client,
-                            Mould = mould,
-                            Master = master,
-                            Mixture = mixture,
-                            Quantity = model.Quantity,
-                            Machine = model.Machine,
-                            Notes = model.Notes,
-                            Packaging = model.Packaging,
-                            PackagingQuantity = model.PackagingCount,
-                            Status = Status.Waiting,
-                            Minced = (model.MincedCheck == 1) ? model.Minced : null,
-                            Humidification = (model.HumidifiedCheck == 1) ? TimeSpan.FromMinutes(model.Humidified) : TimeSpan.Zero,
-                            Start = model.Start
-                        };
-                        _dB.Layouts.Add(layout);
-                        barcode.GenerateEan13(layout.Barcode);
-                        await _dB.SaveChangesAsync();
-                        return RedirectToAction("Index");
-                    }
+                        Barcode = barcode.CreateNewEan13(codes),
+                        Client = client,
+                        Mould = mould,
+                        Master = master,
+                        Mixture = mixture,
+                        Quantity = model.Quantity,
+                        Machine = model.Machine,
+                        Notes = model.Notes,
+                        Packaging = model.Packaging,
+                        PackagingQuantity = model.PackagingCount,
+                        Status = Status.Waiting,
+                        Minced = (model.MincedCheck == 1) ? model.Minced : null,
+                        Humidification = (model.HumidifiedCheck == 1) ? TimeSpan.FromMinutes(model.Humidified) : TimeSpan.Zero,
+                        Start = model.Start
+                    };
+                    _dB.Layouts.Add(layout);
+                    barcode.GenerateEan13(layout.Barcode);
+                    await _dB.SaveChangesAsync();
+                    return RedirectToAction("Index");
                 }
             }
             return RedirectToAction("Index", "Error", new { id = 11 });
@@ -163,6 +160,41 @@ namespace TTMMC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, NewLayoutModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var layout = await _dB.Layouts
+                    .Include(l => l.Client)
+                    .Include(l => l.Master)
+                    .Include(l => l.Mixture)
+                    .Include(l => l.Mould)
+                    .Where(l => l.Id == id)
+                    .FirstOrDefaultAsync();
+                if (layout is Layout && model.Client > 0 && model.Mould > 0 && model.Mixture > 0 && model.Quantity > 0 && model.Machine > 0)
+                {
+                    var client = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == model.Client);
+                    var mould = await _dB.Moulds.FirstOrDefaultAsync(c => c.Id == model.Mould);
+                    var master = await _dB.Masters.FirstOrDefaultAsync(c => c.Id == model.Master);
+                    var mixture = await _dB.Mixtures.FirstOrDefaultAsync(c => c.Id == model.Mixture);
+                    var machine = _machines.GetMachineById(model.Machine);
+                    if (client is Client && mould is Mould && mixture is Mixture && machine is IMachine)
+                    {
+                        layout.Client = client;
+                        layout.Mould = mould;
+                        layout.Master = master;
+                        layout.Mixture = mixture;
+                        layout.Quantity = model.Quantity;
+                        layout.Machine = model.Machine;
+                        layout.Notes = model.Notes;
+                        layout.Packaging = model.Packaging;
+                        layout.PackagingQuantity = model.PackagingCount;
+                        layout.Minced = (model.MincedCheck == 1) ? model.Minced : null;
+                        layout.Humidification = (model.HumidifiedCheck == 1) ? TimeSpan.FromMinutes(model.Humidified) : TimeSpan.Zero;
+                        layout.Start = model.Start;
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                }
+            }
             return RedirectToAction("Index", "Error", new { id = 12 });
         }
 

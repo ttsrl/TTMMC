@@ -5,6 +5,10 @@
 
     var minced = (string.IsNullOrEmpty(Model.Layout.Minced)) ? "NO" : Model.Layout.Minced;
     var hum = (Model.Layout.Humidification == TimeSpan.Zero) ? "NO" : Model.Layout.Humidification.TotalMinutes.ToString();
+
+    var mstName = (Model.Layout.Master == null) ? "--" : Model.Layout.Master.Name;
+    var mstCode = (Model.Layout.Master == null) ? "--" : Model.Layout.Master.Code;
+    var mstColor = (Model.Layout.Master == null) ? "--" : Model.Layout.Master.Color.ToHex();
 }
 <div class="pdfPage">
     @(await Html.PartialAsync("Header"))
@@ -50,11 +54,11 @@
         <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
         <label class="layoutModuleTitle">MASTER:</label>
         <label class="layoutModuleValue">
-            <b style="width:105px; display:inline-block;">Nome:</b>&nbsp;@(Model.Layout.Master.Name)
+            <b style="width:105px; display:inline-block;">Nome:</b>&nbsp;@mstName
             <br />
-            <b style="width:105px; display:inline-block;">Codice:</b>&nbsp;@(Model.Layout.Master.Code)
+            <b style="width:105px; display:inline-block;">Codice:</b>&nbsp;@mstCode
             <br />
-            <b style="width:105px; display:inline-block;">Colore:</b>&nbsp;<b style="vertical-align:top; display:inline-block; width:35px; height:35px; background-color: @Model.Layout.Master.Color.ToHex(); border:1px solid rgba(0,0,0,0.3);"></b>
+            <b style="width:105px; display:inline-block;">Colore:</b>&nbsp;<b style="vertical-align:top; display:inline-block; width:35px; height:35px; background-color: @mstColor; border:1px solid rgba(0,0,0,0.3);"></b>
         </label>
         <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
         <label class="layoutModuleTitle">MACINATO:</label>

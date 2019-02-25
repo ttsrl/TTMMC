@@ -128,3 +128,21 @@ var validateNewMasterRules = {
     'name': { required: true },
     'hexColor': { required: true }
 };
+
+var validateNewLayoutRules = {
+    'client': { required: true },
+    'mould': { required: true },
+    'mixture': { required: true },
+    'machine': { required: true },
+    'quantity': { required: true },
+    'start': { required: true }
+};
+
+var validateNewLayoutMessages = {
+    'client': { required: "Inserire un cliente" },
+    'mould': { required: "Inserire uno stampo" },
+    'mixture': { required: "Inserire una miscela" },
+    'machine': { required: "Inserire una macchina" },
+    'quantity': { required: "Inserire una quantità" },
+    'start': { required: "Inserire una data" }
+};
