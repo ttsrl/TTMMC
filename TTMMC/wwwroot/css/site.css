@@ -150,12 +150,14 @@ a.add:hover, a.remove:hover {
     height: 150px;
     min-width: 1000px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
     #footer .footer_page {
         width: auto;
         display: inline-block;
-        margin: 40px;
         text-align: left;
     }
 
