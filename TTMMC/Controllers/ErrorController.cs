@@ -94,6 +94,11 @@ namespace TTMMC.Controllers
             {
                 txt = "Impossibile cancellare questo materiale perchè è legato ad una o più miscele.";
             }
+            //------------------- errori layouts
+            else if (id == 22)
+            {
+                txt = "Impossibile avvia questa disposizione. Se l'errore persisite contattare l'assistenza";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

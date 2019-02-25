@@ -39,8 +39,8 @@
                 </td>
                 <td class="buttons" style="vertical-align: middle; text-align: right;">
                     <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
-                    <a asp-if="@(l.Status == Status.Waiting && available)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
-                    <span asp-if="@(l.Status == Status.Waiting && !available)" title="Macchina offline oppure occupata">AVVIA</span>
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButtonA" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione" style="@((!available) ? "display:none;" : "")">AVVIA</a>
+                    <span asp-if="@(l.Status == Status.Waiting)" title="Macchina offline oppure occupata" class="startButtonL" style="@((available) ? "display:none;" : "")">AVVIA</span>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                     <span asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</span>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id">Modifica</a>
@@ -75,6 +75,13 @@
                     $("#l_" + bc).attr("class", "led " + it.status);
                     $("#l_" + bc).attr("title", it.status);
                     $("#c_" + bc).html(it.logs);
+                    if (it.machineStatus == "true" || it.machineStatus == true) {
+                        $("#" + bc + " .startButtonA").css("display", "inline-block");
+                        $("#" + bc + " .startButtonL").css("display", "none");
+                    } else {
+                        $("#" + bc + " .startButtonA").css("display", "none");
+                        $("#" + bc + " .startButtonL").css("display", "inline-block");
+                    }
                     if (it.status == "@Enum.GetName(typeof(Status), Status.Finished)") {
                         $("#" + bc + " .stopButton").remove();
                         $("#" + bc + " .reportButton").css("display", "inline-block");

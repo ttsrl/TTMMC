@@ -174,16 +174,21 @@ namespace TTMMC.Controllers
                 var layout = await _dB.Layouts.Where(l => l.Status == Status.Waiting).FirstOrDefaultAsync(l => l.Id == id);
                 if(layout is Layout)
                 {
-                    if(!_lListener.Contains(layout))
-                        _lListener.Add(layout);
-                    var ll = _lListener.GetLayoutListenItem(layout);
-                    ll.TimerTick = 2;
-                    ll.Rounded = true;
-                    ll.RoundedPrecision = 2;
-                    await ll.Start();
+                    var m = _machines.GetMachineById(layout.Machine);
+                    if (m is IMachine && m.Recording == false && m.GetStatus() == MachineStatus.Online)
+                    {
+                        if (!_lListener.Contains(layout))
+                            _lListener.Add(layout);
+                        var ll = _lListener.GetLayoutListenItem(layout);
+                        ll.TimerTick = 2;
+                        ll.Rounded = true;
+                        ll.RoundedPrecision = 2;
+                        await ll.Start();
+                        return RedirectToAction("Index");
+                    }
                 }
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Error", new { id = 22 });
         }
 
         [HttpGet]
