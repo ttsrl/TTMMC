@@ -24,6 +24,7 @@ namespace TTMMC.Models.ViewModels
         public Client DefaultClient { get; set; }
         public Mould DefaultMould { get; set; }
         public Mixture DefaultMixture { get; set; }
+        public Master DefaultMaster { get; set; }
     }
 
     public class NewLayoutModel

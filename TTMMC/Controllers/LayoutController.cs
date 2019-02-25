@@ -68,7 +68,8 @@ namespace TTMMC.Controllers
                 Packaging = packaging,
                 DefaultClient = (defM is Mould) ? defM.DefaultClient : null,
                 DefaultMixture = (defM is Mould) ? defM.DefaultMixture : null,
-                DefaultMould = (defM is Mould) ? defM : null
+                DefaultMould = (defM is Mould) ? defM : null,
+                DefaultMaster = (defM is Mould) ? defM.DefaultMaster : null
             };
             return View(model);
         }

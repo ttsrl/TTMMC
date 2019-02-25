@@ -10,23 +10,23 @@
     </div>
     <table class="table">
         <tr>
-            <td style="font-weight:bold; width:100px;">Codice</td>
-            <td style="font-weight:bold; width:260px;">Descrizione</td>
-            <td style="font-weight:bold; width:120px;">Posizione</td>
-            <td style="font-weight:bold; width:210px;">Note</td>
-            <td style="font-weight:bold; width:210px;">Azioni</td>
+            <td style="font-weight:bold; width:90px;">Codice</td>
+            <td style="font-weight:bold; width:280px;">Descrizione</td>
+            <td style="font-weight:bold; width:130px;">Posizione</td>
+            <td style="font-weight:bold; width:240px;">Note</td>
+            <td style="font-weight:bold; width:160px;">Azioni</td>
         </tr>
         @foreach (var it in Model.Moulds)
         {
             <tr id="@it.Code">
                 <td style="font-weight:bold; padding-left:20px;">@it.Code</td>
-                <td>@it.Description</td>
+                <td style="font-size:12px;">@it.Description</td>
                 <td style="font-size:12px;">@it.Location</td>
                 <td style="font-size:12px;">@((string.IsNullOrWhiteSpace(it.Notes) || string.IsNullOrEmpty(it.Notes)) ? "Nessuna nota" : it.Notes)</td>
-                <td>
-                    @*<a asp-action="NewLayout" asp-controller="Mould" asp-route-id="@it.Id">Lavorazione</a>*@
-                    <a asp-action="ViewModule" asp-controller="Mould" asp-route-id="@it.Id" target="_blank">Scheda</a>
+                <td style="text-align: right;padding-right:20px;">
+                    <a asp-action="NewLayout" asp-controller="Mould" asp-route-id="@it.Id">Lavora</a>
                     &nbsp;-&nbsp;
+                    <a asp-action="ViewModule" asp-controller="Mould" asp-route-id="@it.Id" target="_blank">Scheda</a>
                     <a asp-action="Edit" asp-controller="Mould" asp-route-id="@it.Id">Modifica</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mould" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei sicuro di vuoler rimuovere questo stampo?" data-title="Conferma Eliminazione">Rimuovi</a>

@@ -21,6 +21,8 @@
         </tr>
         @foreach (var l in Model.Layouts)
         {
+            var machine = Model.Machines.Where(m => m.Id == l.Machine).FirstOrDefault();
+            var available = (machine is IMachine && machine.Recording == false && machine.GetStatus() == MachineStatus.Online) ? true : false;
             <tr id="@l.Barcode" style="font-size: 12px;">
                 <td style="font-weight:bold; vertical-align: middle;">
                     <a asp-action="ViewModule" asp-controller="Layout" asp-route-id="@l.Id" target="_blank" title="Apri scheda lavorazione" style="font-size: 13px;">@l.Barcode</a>
@@ -37,10 +39,11 @@
                 </td>
                 <td class="buttons" style="vertical-align: middle; text-align: right;">
                     <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Waiting && available)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
+                    <span asp-if="@(l.Status == Status.Waiting && !available)" title="Macchina offline oppure occupata">AVVIA</span>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                     <span asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</span>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id">Modifica</a>
                     <span asp-if="@(l.Status == Status.Waiting)">-</span>
                     <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>
                 </td>
