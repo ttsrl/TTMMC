@@ -65,52 +65,50 @@ namespace TTMMC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New(NewMouldModel model)
         {
-            if (ModelState.IsValid) //se il modello è valido
+            if (!string.IsNullOrEmpty(model.Code) && !string.IsNullOrEmpty(model.Description) && !string.IsNullOrEmpty(model.Location))
             {
-                if (!string.IsNullOrEmpty(model.Code) && !string.IsNullOrEmpty(model.Description) && !string.IsNullOrEmpty(model.Location))
+                var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
+                var client = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == model.Client);
+                var master = await _dB.Masters.FirstOrDefaultAsync(m => m.Id == model.Master);
+                Mixture mixture = null;
+                if (model.Mixture == -1)
                 {
-                    var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
-                    var client = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == model.Client);
-                    var master = await _dB.Masters.FirstOrDefaultAsync(m => m.Id == model.Master);
-                    Mixture mixture = null;
-                    if (model.Mixture == -1)
+                    mixture = await addMixture(model.MixtureName, model.MixtureQuantitys, model.MixtureMaterials, model.MixtureNotes);
+                    _dB.Mixtures.Add(mixture);
+                }
+                else
+                {
+                    mixture = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == model.Mixture);
+                }
+
+                if (existMould == null)
+                {
+                    var newFileName = "";
+                    if (model.Image != null && model.Image.Length > 0) //se è presente un'immagine
                     {
-                        mixture = await addMixture(model.MixtureName, model.MixtureQuantitys, model.MixtureMaterials, model.MixtureNotes);
-                        _dB.Mixtures.Add(mixture);
-                    }
-                    else
-                    {
-                        mixture = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == model.Mixture);
-                    }
-                    if (mixture is Mixture && existMould == null)
-                    {
-                        var newFileName = "";
-                        if (model.Image != null && model.Image.Length > 0) //se è presente un'immagine
+                        var fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName.Trim('"');
+                        newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
+                        fileName = Path.Combine(_environment.WebRootPath, "mouldImages", newFileName);
+                        using (FileStream fs = System.IO.File.Create(fileName))
                         {
-                            var fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName.Trim('"');
-                            newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
-                            fileName = Path.Combine(_environment.WebRootPath, "mouldImages", newFileName);
-                            using (FileStream fs = System.IO.File.Create(fileName))
-                            {
-                                model.Image.CopyTo(fs);
-                                fs.Flush();
-                            }
+                            model.Image.CopyTo(fs);
+                            fs.Flush();
                         }
-                        var mould = new Mould
-                        {
-                            Location = model.Location,
-                            DefaultClient = client,
-                            DefaultMixture = mixture,
-                            DefaultMaster = master,
-                            Image = (model.Image != null && model.Image.Length > 0) ? newFileName : "",
-                            Code = model.Code,
-                            Description = model.Description,
-                            Notes = model.Notes
-                        };
-                        _dB.Moulds.Add(mould);
-                        await _dB.SaveChangesAsync();
-                        return RedirectToAction("Index");
                     }
+                    var mould = new Mould
+                    {
+                        Location = model.Location,
+                        DefaultClient = client,
+                        DefaultMixture = mixture,
+                        DefaultMaster = master,
+                        Image = (model.Image != null && model.Image.Length > 0) ? newFileName : "",
+                        Code = model.Code,
+                        Description = model.Description,
+                        Notes = model.Notes
+                    };
+                    _dB.Moulds.Add(mould);
+                    await _dB.SaveChangesAsync();
+                    return RedirectToAction("Index");
                 }
             }
             return RedirectToAction("Index", "Error", new { id = 3 });
