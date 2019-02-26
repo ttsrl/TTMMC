@@ -6,7 +6,7 @@
 <div class="content_page margin_bottom">
     <div style="margin-bottom: 15px; text-align: right;">
         <label for="searchBar" style="width: 60px;">Cerca:</label>
-        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Codice, Descriz, Posizione" onkeyup="filterSearch(event)" autocomplete="off" />
+        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Codice, Posizione" onkeyup="filterSearch(event)" autocomplete="off" />
     </div>
     <table class="table">
         <tr>
@@ -18,7 +18,7 @@
         </tr>
         @foreach (var it in Model.Moulds)
         {
-            <tr id="@it.Code">
+            <tr id="@it.Code.Replace(" ", "")">
                 <td style="font-weight:bold; padding-left:20px;">@it.Code</td>
                 <td style="font-size:12px;">@it.Description</td>
                 <td style="font-size:12px;">@it.Location</td>
@@ -51,21 +51,21 @@
             for (var i = 0; i < words.length; i++) {
                 var word = words[i].toLowerCase();
                 $(moulds).each(function (index, item) {
+                    var id = item.Code.replaceAll(" ", "");
                     var bc = item.Code.toLowerCase();
-                    var name = item.Description.toLowerCase();
                     var vat = item.Location.toLowerCase();
                     if (i == 0) {
-                        if ((bc.indexOf(word) >= 0) || (name.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
-                            $("#" + bc).css("display", "");
+                        if ((bc.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
+                            $("#" + id).css("display", "");
                         } else {
-                            $("#" + bc).css("display", "none");
+                            $("#" + id).css("display", "none");
                         }
                     } else {
-                        if ($("#" + bc).css("display") != "none") {
-                            if ((bc.indexOf(word) >= 0) || (name.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
-                                $("#" + bc).css("display", "");
+                        if ($("#" + id).css("display") != "none") {
+                            if ((bc.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
+                                $("#" + id).css("display", "");
                             } else {
-                                $("#" + bc).css("display", "none");
+                                $("#" + id).css("display", "none");
                             }
                         }
                     }

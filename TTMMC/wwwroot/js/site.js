@@ -16,6 +16,11 @@ Array.prototype.remove = function (obj) {
     }
 };
 
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
 function openMenu(it) {
     $(it).find(".pnl").css("display", "inline-flex");
     $(it).find(".nmtlt").addClass("hover");
