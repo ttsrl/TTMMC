@@ -47,7 +47,7 @@ namespace TTMMC.Models.DBModels
         public List<LayoutRecord> LayoutActRecords { get; set; }
         public LayoutRecord LayoutSetRecord { get; set; }
         public string Notes { get; set; }
-        public DateTime StartTimestamp
+        public DateTime Timestamp
         {
             get => _startTimestamp ?? DateTime.Now;
             set => _startTimestamp = value;

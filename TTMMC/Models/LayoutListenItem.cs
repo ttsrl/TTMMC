@@ -88,7 +88,7 @@ namespace TTMMC.Models
                 };
 
                 ll.LayoutSetRecord = record;
-                ll.StartTimestamp = DateTime.Now;
+                ll.Timestamp = DateTime.Now;
                 await _dB.SaveChangesAsync();
 
                 _timer = new Timer(Do, null, TimeSpan.Zero, TimeSpan.FromSeconds(timerTick));

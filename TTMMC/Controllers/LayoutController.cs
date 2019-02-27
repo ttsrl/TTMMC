@@ -33,6 +33,7 @@ namespace TTMMC.Controllers
                     .ThenInclude(m => m.Items)
                 .Include(ll => ll.Mould)
                 .Include(ll => ll.LayoutActRecords)
+                .OrderByDescending(ll => ll.Start)
                 .ToListAsync();
             var c = await _dB.Clients.ToListAsync();
             var model = new IndexLayoutModel
