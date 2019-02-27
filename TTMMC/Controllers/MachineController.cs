@@ -11,9 +11,9 @@ namespace TTMMC.Controllers
     {
         private readonly MachinesService _machines;
 
-        public MachineController(MachinesService machines)
+        public MachineController([FromServices] MachinesService machines)
         {
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines;
         }
 
         public IActionResult Index()

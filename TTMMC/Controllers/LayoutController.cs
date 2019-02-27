@@ -17,11 +17,11 @@ namespace TTMMC.Controllers
         private readonly DBContext _dB;
         private readonly MachinesService _machines;
 
-        public LayoutController(MachinesService machines, DBContext dB, LayoutListener layoutListener)
+        public LayoutController([FromServices] MachinesService machines, DBContext dB, [FromServices] LayoutListener layoutListener)
         {
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines;
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
-            _lListener = layoutListener ?? throw new ArgumentNullException(nameof(layoutListener));
+            _lListener = layoutListener;
         }
 
         public async Task<IActionResult> Index()
@@ -246,6 +246,8 @@ namespace TTMMC.Controllers
                 if (layout is Layout)
                 {
                     await _lListener.Remove(layout);
+                    layout.Status = Status.Stopped;
+                    await _dB.SaveChangesAsync();
                 }
             }
             return RedirectToAction("Index");

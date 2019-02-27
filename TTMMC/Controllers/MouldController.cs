@@ -22,10 +22,10 @@ namespace TTMMC.Controllers
         private readonly MachinesService _machines;
         private readonly IHostingEnvironment _environment;
 
-        public MouldController(DBContext dB, MachinesService machines, IHostingEnvironment iHostingEnvironment)
+        public MouldController(DBContext dB, [FromServices] MachinesService machines, IHostingEnvironment iHostingEnvironment)
         {
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines ;
             _environment = iHostingEnvironment ?? throw new ArgumentNullException(nameof(iHostingEnvironment));
         }
 

@@ -17,11 +17,11 @@ namespace TTMMC.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly MachinesService _machines;
 
-        public PdfController(DBContext dB, MachinesService machines, IHostingEnvironment hostingEnvironment)
+        public PdfController(DBContext dB, [FromServices] MachinesService machines, IHostingEnvironment hostingEnvironment)
         {
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines ;
         }
 
         [HttpGet]
