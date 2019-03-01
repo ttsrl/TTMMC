@@ -29,6 +29,14 @@ namespace TTMMC.Services
         Online
     }
 
+    public enum ModalityLog
+    {
+        RefKeyReadGreater0,
+        RefKeyReadGreaterOld,
+        RefKeyReadGreater0EveryXTimes,
+        RefKeyReadGreaterOldEveryXTimes,
+    }
+
     public class MachinesService
     {
         private List<IMachine> machines = new List<IMachine>();

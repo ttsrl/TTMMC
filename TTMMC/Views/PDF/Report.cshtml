@@ -4,13 +4,13 @@
     ViewData["Title"] = "Report";
     Layout = "_Layout.cshtml";
 
-    var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 55, 35);
+    var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 59, 35);
 }
 <div class="pdfPage">
     @(await Html.PartialAsync("Header"))
     <div style="vertical-align:middle; overflow:auto;">
         <h2 style="float:left;">Report Lavorazione - @Model.Layout.Barcode</h2>
-        <img src="~/barcodes/@(Model.Layout.Barcode).png" style="float:right;width:150px;margin-top:10px;"/>
+        <img src="~/barcodes/@(Model.Layout.Barcode).png" style="float:right;width:150px;margin-top:10px;" />
     </div>
     <div>
         <h3>Impostazioni macchina</h3>
@@ -26,13 +26,10 @@
                 <td>@Model.Layout.LayoutSetRecord.Timestamp.ToString("dd/MM/yy")<br />@Model.Layout.LayoutSetRecord.Timestamp.ToString("HH:mm")</td>
                 @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
                 {
-                    var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(set.Value) ?? new Dictionary<string, string>();
-                    if (json.Count == 1)
+                    var isJson = _utils.IsValidJson<Dictionary<string, string>>(set.Value);
+                    if (isJson)
                     {
-                        <td style="text-align:center;">@(json.Values.ElementAt(0))</td>
-                    }
-                    else
-                    {
+                        var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(set.Value);
                         <td>
                             @foreach (var v in json.Values)
                             {
@@ -40,6 +37,10 @@
                                 <br />
                             }
                         </td>
+                    }
+                    else
+                    {
+                        <td>@set.Value</td>
                     }
                 }
             </tr>
@@ -61,17 +62,14 @@
                 {
                     var dic = r.Fields.Select(lr => new { lr.Key, lr.Value }).ToDictionary(d => d.Key, d => d.Value);
                     <tr>
-                        <td>@r.Timestamp.ToString("dd/MM/yy")<br />@r.Timestamp.ToString("HH:mm")</td>
+                        <td>@r.Timestamp.ToString("dd/MM/yy")<br />@r.Timestamp.ToString("HH:mm:ss")</td>
                         @foreach (var set in Model.Layout.LayoutActRecords[0].Fields.OrderBy(l => l.Key))
                         {
                             var elm = dic[set.Key];
-                            var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(elm) ?? new Dictionary<string, string>();
-                            if (json.Count == 1)
+                            var isJson = _utils.IsValidJson<Dictionary<string, string>>(elm);
+                            if (isJson)
                             {
-                                <td style="text-align:center;">@(json.Values.ElementAt(0))</td>
-                            }
-                            else
-                            {
+                                var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(elm);
                                 <td>
                                     @foreach (var v in json.Values)
                                     {
@@ -79,6 +77,10 @@
                                         <br />
                                     }
                                 </td>
+                            }
+                            else
+                            {
+                                <td>@elm</td>
                             }
                         }
                     </tr>

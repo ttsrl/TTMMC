@@ -21,6 +21,7 @@ namespace TTMMC.Models
         private readonly IMachine _machine;
         private bool _roundedValue = false;
         private int _roundedPrecision = 2;
+        private int attualXTimes = 1;
         private Timer _timer;
         private readonly DBContext _dB;
 
@@ -77,7 +78,7 @@ namespace TTMMC.Models
                         }
                         newIt.Add(par.Value.IndexOf(dataIt).ToString(), val);
                     }
-                    var json = JsonConvert.SerializeObject(newIt);
+                    var json = (newIt.Count > 1) ? JsonConvert.SerializeObject(newIt) : ((newIt.Count == 1) ? newIt.ElementAt(0).Value : "");
                     fields.Add(new LayoutRecordField { Key = par.Key, Value = json });
                 }
 
@@ -137,7 +138,7 @@ namespace TTMMC.Models
                             }
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
-                        var json = JsonConvert.SerializeObject(newIt) ?? "";
+                        var json = (newIt.Count > 1) ? JsonConvert.SerializeObject(newIt) : ((newIt.Count == 1) ? newIt.ElementAt(0).Value : "0");
                         fields.Add(new LayoutRecordField { Key = act.Key, Value = json });
                     }
                 }
@@ -171,12 +172,72 @@ namespace TTMMC.Models
 
         private async Task<bool> isChangedReferenceKey()
         {
+            //prendo la reference key e prendo il primo valore della ref
             var di = ((KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead()).Value[0];
-            var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
-            if(actV != _referenceKeyLogOld)
+            var diType = _machine.GetDataItemType(di) ?? typeof(int);
+            var actV = await _machine.ReadAsync(di.Address, diType);
+
+            if (diType == typeof(string))
             {
-                _referenceKeyLogOld = actV;
-                return true;
+                if (actV != _referenceKeyLogOld)
+                {
+                    _referenceKeyLogOld = actV;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var doubleActV = double.Parse(actV);
+                if (_machine.ModalityLogCheck == ModalityLog.RefKeyReadGreater0)
+                {
+                    if (doubleActV > 0.0)
+                        return true;
+                }
+                else if (_machine.ModalityLogCheck == ModalityLog.RefKeyReadGreaterOld)
+                {
+                    var doubleRefKeyLogOld = double.Parse(_referenceKeyLogOld);
+                    if (doubleActV > doubleRefKeyLogOld)
+                    {
+                        _referenceKeyLogOld = doubleActV.ToString();
+                        return true;
+                    }
+                }
+                else if (_machine.ModalityLogCheck == ModalityLog.RefKeyReadGreater0EveryXTimes)
+                {
+                    if (doubleActV > 0.0)
+                    {
+                        if (attualXTimes == _machine.ValueModalityLogCheck)
+                        {
+                            attualXTimes = 1;
+                            return true;
+                        }
+                        else
+                        {
+                            attualXTimes++;
+                        }
+                    }
+                }
+                else if (_machine.ModalityLogCheck == ModalityLog.RefKeyReadGreaterOldEveryXTimes)
+                {
+                    var doubleRefKeyLogOld = double.Parse(_referenceKeyLogOld);
+                    if (doubleActV > doubleRefKeyLogOld)
+                    {
+                        if (attualXTimes == _machine.ValueModalityLogCheck)
+                        {
+                            _referenceKeyLogOld = doubleActV.ToString();
+                            attualXTimes = 1;
+                            return true;
+                        }
+                        else
+                        {
+                            attualXTimes++;
+                        }
+                    }
+                }
             }
             return false;
         }

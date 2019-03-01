@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using TTMMC.Models;
 using TTMMC.Models.DBModels;
 using TTMMC.Models.ViewModels;
@@ -213,7 +214,7 @@ namespace TTMMC.Controllers
                         if (!_lListener.Contains(layout))
                             _lListener.Add(layout);
                         var ll = _lListener.GetLayoutListenItem(layout);
-                        ll.TimerTick = 2;
+                        ll.TimerTick = 10;
                         ll.Rounded = true;
                         ll.RoundedPrecision = 2;
                         await ll.Start();
@@ -227,12 +228,12 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> remove(int id)
         {
-            var ff = await _dB.LayoutsActRecordsFields.ToListAsync();
-            var f = await _dB.LayoutsActRecords.ToListAsync();
+            var ff = await _dB.LayoutsRecordsFields.ToListAsync();
+            var f = await _dB.LayoutsRecords.ToListAsync();
             var l = await _dB.Layouts.FirstOrDefaultAsync();
             l.Status = Status.Waiting;
-            _dB.LayoutsActRecordsFields.RemoveRange(ff);
-            _dB.LayoutsActRecords.RemoveRange(f);
+            _dB.LayoutsRecordsFields.RemoveRange(ff);
+            _dB.LayoutsRecords.RemoveRange(f);
             await _dB.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -281,14 +282,30 @@ namespace TTMMC.Controllers
                     var fields = layout.LayoutActRecords;
                     foreach(var f in fields)
                     {
-                        _dB.LayoutsActRecordsFields.RemoveRange(f.Fields);
+                        _dB.LayoutsRecordsFields.RemoveRange(f.Fields);
                     }
-                    _dB.LayoutsActRecords.RemoveRange(layout.LayoutActRecords);
+                    _dB.LayoutsRecords.RemoveRange(layout.LayoutActRecords);
                     _dB.Layouts.Remove(layout);
                     await _dB.SaveChangesAsync();
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> empty()
+        {
+            var layout = await _dB.Layouts.Where(b => b.Barcode == "5844240577527").FirstOrDefaultAsync();
+            layout.LayoutActRecords = new List<LayoutRecord>();
+            layout.LayoutSetRecord = new LayoutRecord();
+            await _dB.SaveChangesAsync();
+
+            var logs = await _dB.LayoutsRecordsFields.ToListAsync();
+            _dB.LayoutsRecordsFields.RemoveRange(logs);
+            var recs = await _dB.LayoutsRecords.ToListAsync();
+            _dB.LayoutsRecords.RemoveRange(recs);
+            await _dB.SaveChangesAsync();
+            return RedirectToAction("index");
         }
 
         [HttpGet]

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TTMMC.ConfigurationModels;
+using static TTMMC.Models.LayoutListenItem;
 
 namespace TTMMC.Models
 {
@@ -18,6 +19,9 @@ namespace TTMMC.Models
         ConnectionProtocol ConnectionProtocol { get; }
         bool HaveImage { get; }
         bool Recording { get; set; }
+        MachineStatus Status { get; }
+        ModalityLog ModalityLogCheck { get; }
+        int ValueModalityLogCheck { get; }
 
         void Connect();
         MachineStatus GetStatus();

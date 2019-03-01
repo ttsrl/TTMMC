@@ -7,6 +7,7 @@ using TTMMC.ConfigurationModels;
 using Hylasoft.Opc.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using static TTMMC.Models.LayoutListenItem;
 
 namespace TTMMC.Models
 {
@@ -28,6 +29,9 @@ namespace TTMMC.Models
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
         public bool Recording { get => recording; set => recording = value; }
+        public MachineStatus Status { get => GetStatus(); }
+        public ModalityLog ModalityLogCheck { get; }
+        public int ValueModalityLogCheck { get; }
 
         public OPCMachine(Machine machine)
         {
@@ -38,6 +42,8 @@ namespace TTMMC.Models
             Id = machine.Id;
             Port = machine.Port;
             ConnectionProtocol = machine.Protocol;
+            ModalityLogCheck = machine.ModalityLogCheck;
+            ValueModalityLogCheck = machine.ValueModalityLogCheck;
             HaveImage = (!string.IsNullOrEmpty(machine.Image)) ? true : false;
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();

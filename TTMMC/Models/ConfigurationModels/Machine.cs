@@ -1,8 +1,7 @@
 ﻿using TTMMC.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using static TTMMC.Models.LayoutListenItem;
 
 namespace TTMMC.ConfigurationModels
 {
@@ -18,6 +17,8 @@ namespace TTMMC.ConfigurationModels
         public string Address { get; set; }
         public string Port { get; set; }
         public string Image { get; set; }
+        public ModalityLog ModalityLogCheck { get; set; }
+        public int ValueModalityLogCheck { get; set; }
         public Dictionary<string, List<DataItem>> DatasAddressToRead { get; set; }
         public Dictionary<string, List<DataItem>> DatasAddressToWrite { get; set; }
     }
