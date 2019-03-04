@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TTMMC.Models.ViewModels;
 
@@ -9,6 +10,7 @@ namespace TTMMC.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.SetString("Session", "Active");
             return View();
         }
 

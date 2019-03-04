@@ -28,11 +28,12 @@ namespace TTMMC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddDistributedMemoryCache();
 
             //sessione 1 mese
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromDays(30);
-                options.Cookie.Name = "TTMMC";
+                options.Cookie.Name = "TTMMC.Session";
             });
 
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

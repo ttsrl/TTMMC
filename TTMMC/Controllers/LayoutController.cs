@@ -214,7 +214,7 @@ namespace TTMMC.Controllers
                         if (!_lListener.Contains(layout))
                             _lListener.Add(layout);
                         var ll = _lListener.GetLayoutListenItem(layout);
-                        ll.TimerTick = 10;
+                        ll.TimerTick = 4;
                         ll.Rounded = true;
                         ll.RoundedPrecision = 2;
                         await ll.Start();
