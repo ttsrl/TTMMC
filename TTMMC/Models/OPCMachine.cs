@@ -32,6 +32,9 @@ namespace TTMMC.Models
         public MachineStatus Status { get => GetStatus(); }
         public ModalityLog ModalityLogCheck { get; }
         public int ValueModalityLogCheck { get; }
+        public DataItem ReferenceKeyRead { get; }
+        public DataItem FinishKeyRead { get; }
+        public DataItem FinishKeyWrite { get; }
 
         public OPCMachine(Machine machine)
         {
@@ -48,28 +51,39 @@ namespace TTMMC.Models
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();
             datasAddressToWrite = machine.DatasAddressToWrite ?? new Dictionary<string, List<DataItem>>();
+            ReferenceKeyRead = getReferenceKey(machine.ReferenceKeyRead);
+            FinishKeyRead = getFinishKeyRead(machine.FinishKeyRead);
+            FinishKeyWrite = getFinishKeyWrite(machine.FinishKeyWrite);
             uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port));
             uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
         }
 
-        public KeyValuePair<string, List<DataItem>>? GetReferenceKeyRead()
+        private DataItem getReferenceKey(string name)
         {
-            foreach (var d in datasAddressToRead)
+            foreach (var p in datasAddressToRead)
             {
-                var isRef = (d.Key.Substring(0, 1) == "{" && d.Key.Substring(d.Key.Length - 1, 1) == "}");
-                if (isRef)
-                    return d;
+                if (p.Key == name && p.Value.Count > 0)
+                    return p.Value[0];
             }
             return null;
         }
 
-        public KeyValuePair<string, List<DataItem>>? GetReferenceKeyWrite()
+        private DataItem getFinishKeyRead(string name)
         {
-            foreach (var d in datasAddressToWrite)
+            foreach (var p in datasAddressToRead)
             {
-                var isRef = (d.Key.Substring(0, 1) == "{" && d.Key.Substring(d.Key.Length - 1, 1) == "}");
-                if (isRef)
-                    return d;
+                if (p.Key == name && p.Value.Count > 0)
+                    return p.Value[0];
+            }
+            return null;
+        }
+
+        private DataItem getFinishKeyWrite(string name)
+        {
+            foreach (var p in datasAddressToWrite)
+            {
+                if (p.Key == name && p.Value.Count > 0)
+                    return p.Value[0];
             }
             return null;
         }

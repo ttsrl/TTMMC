@@ -147,7 +147,6 @@ namespace TTMMC.Controllers
                     ContentType = "application/pdf"
                 };
                 return pdf;
-                //return View(new PDFReportModel { Layout = layout, Machine = machine });
             }
             return RedirectToAction("Index", "Error", new { id = 16 });
         }

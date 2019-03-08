@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -13,11 +14,13 @@ namespace TTMMC.Services
         private List<LayoutListenItem> listenItems = new List<LayoutListenItem>();
         private readonly DBContext _dB;
         private readonly MachinesService _machinesService;
+        private readonly IHostingEnvironment _environment;
 
-        public LayoutListener([FromServices] MachinesService machinesService)
+        public LayoutListener([FromServices] MachinesService machinesService, [FromServices] IHostingEnvironment iHostingEnvironment)
         {
             _dB = DBContext.Instance;
             _machinesService = machinesService;
+            _environment = iHostingEnvironment;
         }
 
         public void Add(Layout layout)
@@ -46,7 +49,7 @@ namespace TTMMC.Services
 
         private void add(Layout layout, IMachine machine, int timerTick)
         {
-            var it = new LayoutListenItem(layout, machine);
+            var it = new LayoutListenItem(layout, machine, _environment);
             it.TimerTick = timerTick;
             listenItems.Add(it);
         }

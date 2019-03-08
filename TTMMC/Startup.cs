@@ -32,7 +32,7 @@ namespace TTMMC
 
             //sessione 1 mese
             services.AddSession(options => {
-                options.IdleTimeout = TimeSpan.FromDays(30);
+                options.IdleTimeout = TimeSpan.FromHours(360);
                 options.Cookie.Name = "TTMMC.Session";
             });
 

@@ -3,7 +3,7 @@
     Layout = "_Layout";
     ViewData["Title"] = "Scheda Stampo";
 
-    var image = (string.IsNullOrEmpty(Model.Mould.Image)) ? "/images/machinesDetails/default.jpg" : "/" + Model.Mould.Image;
+    var image = (string.IsNullOrEmpty(Model.Mould.Image)) ? "/images/machinesDetails/default.jpg" : "/mouldImages/" + Model.Mould.Image;
     var desc = (string.IsNullOrEmpty(Model.Mould.Description)) ? "Nessuna descrizione inserita" : Model.Mould.Description;
     var location = (string.IsNullOrEmpty(Model.Mould.Location)) ? "Nessuna posizione inserita" : Model.Mould.Location;
     var note = (string.IsNullOrEmpty(Model.Mould.Notes)) ? "Nessuna nota aggiunta" : Model.Mould.Notes;

@@ -22,6 +22,9 @@ namespace TTMMC.Models
         MachineStatus Status { get; }
         ModalityLog ModalityLogCheck { get; }
         int ValueModalityLogCheck { get; }
+        DataItem ReferenceKeyRead { get; }
+        DataItem FinishKeyRead { get; }
+        DataItem FinishKeyWrite { get; }
 
         void Connect();
         MachineStatus GetStatus();
@@ -35,8 +38,6 @@ namespace TTMMC.Models
         Dictionary<string, List<DataItem>> GetParametersWrite();
         List<DataItem> GetParameterRead(string name);
         List<DataItem> GetParameterWrite(string name);
-        KeyValuePair<string, List<DataItem>>? GetReferenceKeyWrite();
-        KeyValuePair<string, List<DataItem>>? GetReferenceKeyRead();
     }
 
 }

@@ -16,9 +16,14 @@ Array.prototype.remove = function (obj) {
     }
 };
 
-String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
+String.prototype.replaceAll = function (searchStr, replaceStr) {
+    var str = this;
+    // no match exists in string?
+    if (str.indexOf(searchStr) === -1) {
+        return str;
+    }
+    // replace and remove first match, and do another recursirve search/replace
+    return str.replace(searchStr, replaceStr).replaceAll(searchStr, replaceStr);
 };
 
 function openMenu(it) {

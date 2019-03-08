@@ -18,7 +18,7 @@
         </tr>
         @foreach (var it in Model.Moulds)
         {
-            <tr id="@it.Code.Replace(" ", "")">
+            <tr id="@it.Code.Replace(" ", "").Replace(".", "").ToLower()">
                 <td style="font-weight:bold; padding-left:20px;">@it.Code</td>
                 <td style="font-size:12px;">@it.Description</td>
                 <td style="font-size:12px;">@it.Location</td>
@@ -51,7 +51,7 @@
             for (var i = 0; i < words.length; i++) {
                 var word = words[i].toLowerCase();
                 $(moulds).each(function (index, item) {
-                    var id = item.Code.replaceAll(" ", "");
+                    var id = item.Code.replaceAll(" ", "").replaceAll(".", "").toLowerCase();
                     var bc = item.Code.toLowerCase();
                     var vat = item.Location.toLowerCase();
                     if (i == 0) {

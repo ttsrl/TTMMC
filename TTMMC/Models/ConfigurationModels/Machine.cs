@@ -19,6 +19,9 @@ namespace TTMMC.ConfigurationModels
         public string Image { get; set; }
         public ModalityLog ModalityLogCheck { get; set; }
         public int ValueModalityLogCheck { get; set; }
+        public string ReferenceKeyRead { get; set; }
+        public string FinishKeyRead { get; set; }
+        public string FinishKeyWrite { get; set; }
         public Dictionary<string, List<DataItem>> DatasAddressToRead { get; set; }
         public Dictionary<string, List<DataItem>> DatasAddressToWrite { get; set; }
     }

@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,11 +38,14 @@ namespace TTMMC.Models
 
         private string _referenceKeyLogOld = "";
 
-        public LayoutListenItem(Layout layout, IMachine machine)
+        private readonly IHostingEnvironment _environment;
+
+        public LayoutListenItem(Layout layout, IMachine machine, IHostingEnvironment iHostingEnvironment)
         {
             _machine = machine;
             _layout = layout;
             _dB = DBContext.Instance;
+            _environment = iHostingEnvironment;
         }
 
         public async Task Start()
@@ -54,12 +59,11 @@ namespace TTMMC.Models
                     ll.Status = Status.Recording;
                 }
 
-                var refNRead = _machine.GetReferenceKeyRead() ?? null;
-                if (refNRead == null)
+                if (_machine.ReferenceKeyRead == null)
                     return;
 
-                var rRead = (KeyValuePair<string, List<DataItem>>)refNRead;
-                _referenceKeyLogOld = await _machine.ReadAsync(rRead.Value[0].Address, _machine.GetDataItemType(rRead.Value[0]));
+                attualXTimes = _machine.ValueModalityLogCheck;
+                _referenceKeyLogOld = await _machine.ReadAsync(_machine.ReferenceKeyRead.Address, _machine.GetDataItemType(_machine.ReferenceKeyRead));
 
                 //log sets
                 var writes = _machine.GetParametersWrite();
@@ -104,9 +108,6 @@ namespace TTMMC.Models
             {
                 var fields = new List<LayoutRecordField>();
                 var acts = _machine.GetParametersRead();
-
-                var refRead = (KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead();
-                var refNWrite = _machine.GetReferenceKeyWrite();
                 foreach (var act in acts)
                 {
                     if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
@@ -147,15 +148,12 @@ namespace TTMMC.Models
                     Fields = fields
                 };
 
-                var referenceKeyRead = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
-
-                //if is finished
-                if (refNWrite != null)
+                //check finish
+                if (_machine.FinishKeyRead != null && _machine.FinishKeyWrite != null)
                 {
-                    var item = ((KeyValuePair<string, List<DataItem>>)refNWrite);
-                    var referenceKeyFinisched = await _machine.ReadAsync(item.Value[0].Address, _machine.GetDataItemType(item.Value[0]));
-
-                    if (referenceKeyRead == referenceKeyFinisched)
+                    var finKeyRead = await _machine.ReadAsync(_machine.FinishKeyRead.Address, _machine.GetDataItemType(_machine.FinishKeyRead));
+                    var finKeyWrite = await _machine.ReadAsync(_machine.FinishKeyWrite.Address, _machine.GetDataItemType(_machine.FinishKeyWrite));
+                    if (finKeyRead == finKeyWrite)
                     {
                         _layout.Status = Status.Finished;
                         _isBusy = false;
@@ -173,7 +171,7 @@ namespace TTMMC.Models
         private async Task<bool> isChangedReferenceKey()
         {
             //prendo la reference key e prendo il primo valore della ref
-            var di = ((KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead()).Value[0];
+            var di = _machine.ReferenceKeyRead;
             var diType = _machine.GetDataItemType(di) ?? typeof(int);
             var actV = await _machine.ReadAsync(di.Address, diType);
 
@@ -210,7 +208,7 @@ namespace TTMMC.Models
                 {
                     if (doubleActV > 0.0)
                     {
-                        if (attualXTimes == _machine.ValueModalityLogCheck)
+                        if (attualXTimes >= _machine.ValueModalityLogCheck)
                         {
                             attualXTimes = 1;
                             return true;
@@ -226,9 +224,9 @@ namespace TTMMC.Models
                     var doubleRefKeyLogOld = double.Parse(_referenceKeyLogOld);
                     if (doubleActV > doubleRefKeyLogOld)
                     {
-                        if (attualXTimes == _machine.ValueModalityLogCheck)
+                        _referenceKeyLogOld = doubleActV.ToString();
+                        if (attualXTimes >= _machine.ValueModalityLogCheck)
                         {
-                            _referenceKeyLogOld = doubleActV.ToString();
                             attualXTimes = 1;
                             return true;
                         }
