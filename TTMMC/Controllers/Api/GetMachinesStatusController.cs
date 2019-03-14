@@ -1,11 +1,7 @@
-﻿using Hylasoft.Opc.Ua;
-using Microsoft.AspNetCore.Mvc;
-using TTMMC.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using TTMMC.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TTMMC.Controllers.Api
 {

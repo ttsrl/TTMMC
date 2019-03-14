@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace TTMMC
 {
@@ -29,14 +30,20 @@ namespace TTMMC
         {
             services.AddMvc();
             services.AddDistributedMemoryCache();
+            services.AddAntiforgery();
 
-            //sessione 1 mese
+            //sessione 15 giorni
             services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromHours(360);
                 options.Cookie.Name = "TTMMC.Session";
             });
 
+            //database
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services
+            services.AddSingleton<KeepAlive>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();
             services.AddSingleton<LayoutListener>();

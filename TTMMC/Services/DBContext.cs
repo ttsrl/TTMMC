@@ -7,10 +7,14 @@ namespace TTMMC.Services
 {
     public class DBContext : DbContext
     {
+        private static bool started = false;
         public static DbContextOptions<DBContext> Options;
+
+        public static bool Started { get => started; }
 
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
+            started = true;
             Options = options;
         }
 
@@ -23,6 +27,7 @@ namespace TTMMC.Services
         public DbSet<Master> Masters { get; set; }
         public DbSet<Mixture> Mixtures { get; set; }
         public DbSet<MixtureItem> MixtureItems { get; set; }
+        public DbSet<KeepAliveRequest> KeepAliveRequests { get; set; }
 
         private static DBContext _instance;
         public static DBContext Instance

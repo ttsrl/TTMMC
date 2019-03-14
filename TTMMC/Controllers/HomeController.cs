@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TTMMC.Models.ViewModels;
+using TTMMC.Services;
 
 namespace TTMMC.Controllers
 {
     public class HomeController : Controller
     {
-
-        public IActionResult Index()
+        //per mantenere in vita il keep alive ad ogni richiesta alla home che viene fatta
+        public IActionResult Index([FromServices] KeepAlive ka) 
         {
             HttpContext.Session.SetString("Session", "Active");
             return View();

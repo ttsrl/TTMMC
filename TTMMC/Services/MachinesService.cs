@@ -39,12 +39,16 @@ namespace TTMMC.Services
 
     public class MachinesService
     {
-        private List<IMachine> machines = new List<IMachine>();
+        private static List<IMachine> machines = new List<IMachine>();
         public int Count { get => machines.Count(); }
         private readonly Utilities _utils;
-        
+
+        private static bool started = false;
+        public static bool Started { get => started; }
+
         public MachinesService([FromServices] Utilities utils)
         {
+            started = true;
             _utils = utils;
 
             var configMachines = _utils.GetConfigurationElementsList<Machine>("Machines");
@@ -65,6 +69,11 @@ namespace TTMMC.Services
         }
 
         public IEnumerable<IMachine> GetMachines()
+        {
+            return machines;
+        }
+
+        public static IEnumerable<IMachine> GetStaticMachines()
         {
             return machines;
         }
@@ -95,14 +104,6 @@ namespace TTMMC.Services
             }
             return null;
         }
-
-        //public string MachineStatusJson
-        //{
-        //    get
-        //    {
-        //        return JsonConvert.SerializeObject(Enum.GetValues(typeof(OPCMachine.MachineStatus)), new Newtonsoft.Json.Converters.StringEnumConverter());
-        //    }
-        //}
 
     }
 }

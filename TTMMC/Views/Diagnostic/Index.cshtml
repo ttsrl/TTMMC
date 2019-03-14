@@ -1,0 +1,59 @@
+﻿@model DiagnosticModel
+@{
+    ViewData["Title"] = "Diagnostica";
+
+    var getInits = Model.KeepAliveRequests.Where(k => k.Inizialize);
+    var lastInit = getInits.OrderByDescending(k => k.Id).FirstOrDefault()?.Timestamp.ToString("dd/MM/yyyy HH:mm");
+    var averageInit = getInits.Select(k => k.DurationRequest).Sum() / ((getInits.Count() == 0) ? 1 : getInits.Count());
+}
+
+<h2>Diagnostica</h2>
+<div class="content_page margin_bottom">
+    <h3>Servizi</h3>
+    <div class="properties">
+        @foreach (var s in Model.Services)
+        {
+            <label class="titleLbl">@s.Key:</label>
+            <span class="led @((s.Value) ? "green" : "red")"></span>
+            <br />
+        }
+    </div>
+    <br />
+    <h3>Macchine</h3>
+    <div class="properties">
+        <label class="titleLbl">Installate:</label>
+        <label class="valueLbl">@Model.Machines.Count</label>
+        <br />
+        <label class="titleLbl">Online:</label>
+        <label class="valueLbl">@Model.Machines.Where(m => m.Status == MachineStatus.Online).Count()</label>
+        <br />
+        <label class="titleLbl">In Recording:</label>
+        <label class="valueLbl">@Model.Machines.Where(m => m.Recording).Count()</label>
+        <br />
+        <label class="titleLbl">OPC-UA:</label>
+        <label class="valueLbl">@Model.Machines.Where(m => m.ConnectionProtocol == ConnectionProtocol.OPCUA).Count()</label>
+        <br />
+    </div>
+    <br />
+    <h3>KeepAlive</h3>
+    <div class="properties">
+        <label class="titleLbl">Inizializzazioni:</label>
+        <label class="valueLbl">@Model.KeepAliveRequests.Where(k => k.Inizialize).Count()</label>
+        <br />
+        <label class="titleLbl">Ultima Inizial.:</label>
+        <label class="valueLbl">@(lastInit ?? "--")</label>
+        <br />
+        <label class="titleLbl">Tempo Inizial. (media):</label>
+        <label class="valueLbl">@(averageInit)</label>
+        <br />
+        <label class="titleLbl">Richieste:</label>
+        <label class="valueLbl">@Model.KeepAliveRequests.Count</label>
+        <br />
+        <label class="titleLbl">Richieste Fallite:</label>
+        <label class="valueLbl">@Model.KeepAliveRequests.Where(k => k.Response != 200).Count()</label>
+        <br />
+        <label class="titleLbl">Inizializzazioni:</label>
+        <label class="valueLbl">@Model.KeepAliveRequests.Where(k => k.Inizialize).Count()</label>
+        <br />
+    </div>
+</div>

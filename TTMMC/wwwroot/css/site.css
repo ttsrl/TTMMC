@@ -565,7 +565,7 @@ form a:hover{
     vertical-align: middle;
 }
 
-.led {
+.led, .led.green {
     width: 22px;
     height: 22px;
     background-image: url("../images/leds.png");
@@ -591,3 +591,22 @@ form a:hover{
     .led.black, .led.Finished {
         background-position: -88px;
     }
+
+.properties{
+    padding:5px 40px;
+}
+
+    .properties .led {
+        vertical-align: middle;
+        margin: 3px 3px 3px 0px;
+    }
+
+.properties .titleLbl {
+    display: inline-block;
+    width: 175px;
+    font-weight: bold;
+}
+
+.properties .valueLbl {
+    font-weight:normal;
+}

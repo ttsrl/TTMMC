@@ -12,8 +12,12 @@ namespace TTMMC.Services
     {
         private IConfiguration configuration;
 
+        private static bool started = false;
+        public static bool Started { get => started; }
+
         public Utilities(IConfiguration _configuration)
         {
+            started = true;
             configuration = _configuration;
         }
 

@@ -12,7 +12,7 @@ namespace TTMMC.Controllers
     {
         private readonly MachinesService _machines;
 
-        public MachineController([FromServices] MachinesService machines)
+        public MachineController(MachinesService machines)
         {
             _machines = machines;
         }

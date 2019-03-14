@@ -16,8 +16,12 @@ namespace TTMMC.Services
         private readonly MachinesService _machinesService;
         private readonly IHostingEnvironment _environment;
 
+        private static bool started = false;
+        public static bool Started { get => started; }
+
         public LayoutListener([FromServices] MachinesService machinesService, [FromServices] IHostingEnvironment iHostingEnvironment)
         {
+            started = true;
             _dB = DBContext.Instance;
             _machinesService = machinesService;
             _environment = iHostingEnvironment;

@@ -9,12 +9,16 @@ namespace TTMMC.Services
 {
     public class Barcode
     {
+        private static bool started = false;
         private readonly TyKonKet.BarcodeGenerator.Barcode _ean8;
         private readonly TyKonKet.BarcodeGenerator.Barcode _ean13;
         private readonly IHostingEnvironment _hostingEnvironment;
 
+        public static bool Started { get => started; }
+
         public Barcode(IHostingEnvironment hostingEnvironment)
         {
+            started = true;
             _hostingEnvironment = hostingEnvironment;
             _ean8 = new TyKonKet.BarcodeGenerator.Barcode(o =>
             {
