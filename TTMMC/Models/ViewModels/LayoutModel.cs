@@ -11,6 +11,10 @@ namespace TTMMC.Models.ViewModels
     {
         public List<Layout> Layouts { get; set; }
         public List<IMachine> Machines { get; set; }
+        public List<int> LayoutsIds { get; set; }
+        public int ActualId { get; set; }
+        public int NPages { get; set; }
+        public int NPerPage { get; set; }
     }
 
     public class NewLayoutViewModel

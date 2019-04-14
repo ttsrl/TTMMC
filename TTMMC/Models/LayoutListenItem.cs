@@ -147,24 +147,23 @@ namespace TTMMC.Models
                 {
                     Fields = fields
                 };
-
-                //check finish
-                if (_machine.FinishKeyRead != null && _machine.FinishKeyWrite != null)
-                {
-                    var finKeyRead = await _machine.ReadAsync(_machine.FinishKeyRead.Address, _machine.GetDataItemType(_machine.FinishKeyRead));
-                    var finKeyWrite = await _machine.ReadAsync(_machine.FinishKeyWrite.Address, _machine.GetDataItemType(_machine.FinishKeyWrite));
-                    if (finKeyRead == finKeyWrite)
-                    {
-                        _layout.Status = Status.Finished;
-                        _isBusy = false;
-                        _machine.Recording = false;
-                        _timer?.Change(Timeout.Infinite, 0);
-                    }
-                }
-
                 _layout.LayoutActRecords.Add(record);
                 await _dB.SaveChangesAsync();
                 workCount += 1;
+            }
+
+            //check finish
+            if (_machine.FinishKeyRead != null && _machine.FinishKeyWrite != null)
+            {
+                var finKeyRead = await _machine.ReadAsync(_machine.FinishKeyRead.Address, _machine.GetDataItemType(_machine.FinishKeyRead));
+                var finKeyWrite = await _machine.ReadAsync(_machine.FinishKeyWrite.Address, _machine.GetDataItemType(_machine.FinishKeyWrite));
+                if (finKeyRead == finKeyWrite)
+                {
+                    _layout.Status = Status.Finished;
+                    _isBusy = false;
+                    _machine.Recording = false;
+                    _timer?.Change(Timeout.Infinite, 0);
+                }
             }
         }
 

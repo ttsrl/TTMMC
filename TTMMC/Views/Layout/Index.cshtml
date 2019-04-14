@@ -1,6 +1,8 @@
 ﻿@model IndexLayoutModel
 @{
     ViewData["Title"] = "Lavorazioni";
+
+    var groupped = Model.LayoutsIds.Select((x, y) => new { Key = y / Model.NPerPage, Value = x }).GroupBy(x => x.Key, x => x.Value, (k, g) => g.ToList()).ToList();
 }
 <h2>Lavorazioni</h2>
 <div class="content_page margin_bottom" style="padding: 10px 35px 0px;">
@@ -53,6 +55,21 @@
             <td colspan="8" style="text-align:center;">Nessuna Lavorazione presente.</td>
         </tr>
     </table>
+    <br />
+    <div style="text-align: right;">
+        @for(var i = 0; i < Model.NPages; i++)
+        {
+            var start = groupped[i][0];
+            if (groupped[i].Contains(Model.ActualId))
+            {
+                <label>@(i + 1)</label>
+            }
+            else
+            {
+                <a asp-action="Index" asp-controller="Layout" asp-route-clp="@start" style="font-size: 14px;">@(i + 1)</a>
+            }
+        }
+    </div>
 </div>
 
 @section Scripts{

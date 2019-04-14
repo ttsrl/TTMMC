@@ -25,8 +25,11 @@ namespace TTMMC.Controllers
             _lListener = layoutListener;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int clp)
         {
+            var nPerPage = 25;
+            var ids = await _dB.Layouts.Select(lc => lc.Id).OrderByDescending(ll => ll).ToListAsync();
+            clp = (clp == 0) ? ids.First() : clp;
             var l = await _dB.Layouts
                 .Include(ll => ll.Client)
                 .Include(ll => ll.Master)
@@ -34,13 +37,23 @@ namespace TTMMC.Controllers
                     .ThenInclude(m => m.Items)
                 .Include(ll => ll.Mould)
                 .Include(ll => ll.LayoutActRecords)
-                .OrderByDescending(ll => ll.Start)
+                .Where(ll => ll.Id < clp + 1)
+                .OrderByDescending(ll => ll.Id)
+                .Take(nPerPage)
                 .ToListAsync();
             var c = await _dB.Clients.ToListAsync();
+
+            var decpgs = (decimal)(ids.Count) / (decimal)(nPerPage);
+            var nPages = (int)Math.Ceiling(decpgs);
+
             var model = new IndexLayoutModel
             {
                 Layouts = l,
-                Machines = _machines.GetMachines().ToList()
+                Machines = _machines.GetMachines().ToList(),
+                LayoutsIds = ids,
+                NPages = nPages,
+                NPerPage = nPerPage,
+                ActualId = l.First().Id
             };
             return View(model);
         }
